@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แพม</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Design System Tokens */
+    :root {
+      --bg-dark: #0a0b1c;
+      --bg-light: #16183a;
+      --primary-gold: #ffd700;
+      --secondary-gold: #ffaa00;
+      --text-main: #f1f1f7;
+      --text-muted: #a0a5c0;
+      --neon-glow: 0 0 15px rgba(255, 215, 0, 0.4);
+      --glass-bg: rgba(22, 24, 58, 0.6);
+      --glass-border: rgba(255, 215, 0, 0.2);
+    }
+
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #1b1c40 0%, var(--bg-dark) 100%);
+      color: var(--text-main);
+      font-family: 'Kanit', 'Outfit', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    /* Background decorative blobs */
+    .bg-blob {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+    .blob-1 { top: 10%; left: 10%; }
+    .blob-2 { bottom: 15%; right: 10%; }
+
+    /* Layout Containers */
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      margin-top: 10px;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 30%, var(--primary-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    /* Cards & Glassmorphism */
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    /* Control Panel Styles */
+    .panel-section {
+      margin-bottom: 20px;
+    }
+    .panel-section:last-child {
+      margin-bottom: 0;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: var(--primary-gold);
+      margin-bottom: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Thumbnail buttons */
+    .img-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .thumb-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      aspect-ratio: 1;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .thumb-btn:hover img {
+      transform: scale(1.1);
+    }
+
+    .thumb-btn.active {
+      border-color: var(--primary-gold);
+      box-shadow: var(--neon-glow);
+    }
+
+    .thumb-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      font-size: 0.8rem;
+      padding: 4px 0;
+      text-align: center;
+      color: var(--text-main);
+    }
+
+    /* Difficulty Selector */
+    .diff-selector {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn.active {
+      background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--primary-gold) 100%);
+      color: #000;
+      font-weight: 600;
+      border-color: transparent;
+      box-shadow: var(--neon-glow);
+    }
+
+    /* Audio Controls */
+    .audio-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .audio-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-audio-btn {
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid var(--primary-gold);
+      color: var(--primary-gold);
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      font-size: 0.9rem;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .play-audio-btn:hover {
+      background: rgba(255, 215, 0, 0.2);
+    }
+
+    .vol-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .vol-slider {
+      flex: 1;
+      accent-color: var(--primary-gold);
+      cursor: pointer;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    /* Game Area Board */
+    .game-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .board-outer {
+      position: relative;
+      width: 100%;
+      max-width: 450px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      border: 2px solid rgba(255, 215, 0, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 12px;
+      transition: border-color 0.3s;
+    }
+
+    .board-outer.solved {
+      border-color: var(--primary-gold);
+      box-shadow: var(--neon-glow), 0 10px 30px rgba(255, 215, 0, 0.1);
+    }
+
+    .board-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3/4; /* Will change dynamically in JS based on selected image */
+      border-radius: 12px;
+      overflow: hidden;
+      background: #121324;
+    }
+
+    /* Original Image Preview Overlay */
+    .preview-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.18; /* Subtle guide */
+      z-index: 1;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .preview-overlay.visible {
+      opacity: 0.6;
+      z-index: 5;
+    }
+
+    /* Jigsaw Piece Styles */
+    .puzzle-piece {
+      position: absolute;
+      box-sizing: border-box;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      z-index: 2;
+      background-repeat: no-repeat;
+      
+      /* Coordinates are set via CSS Variables in JS */
+      width: calc(100% / var(--cols));
+      height: calc(100% / var(--rows));
+      left: calc(var(--curr-col) * (100% / var(--cols)));
+      top: calc(var(--curr-row) * (100% / var(--rows)));
+      
+      /* Source image crop - using standard formula for percentage background position in CSS */
+      background-size: calc(var(--cols) * 100%) calc(var(--rows) * 100%);
+      background-position: calc(var(--orig-col) * 100% / (var(--cols) - 1)) calc(var(--orig-row) * 100% / (var(--rows) - 1));
+      
+      /* Smooth transitions when swapping */
+      transition: left 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                  top 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                  transform 0.2s, 
+                  box-shadow 0.2s;
+    }
+
+    .puzzle-piece:active {
+      cursor: grabbing;
+    }
+
+    .puzzle-piece.selected {
+      z-index: 10;
+      transform: scale(1.05);
+      border: 2px solid var(--primary-gold);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+
+    .puzzle-piece.correct-snap {
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Game Info & HUD */
+    .hud {
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .status-badge.highlight {
+      border-color: rgba(255, 215, 0, 0.4);
+      color: var(--primary-gold);
+    }
+
+    /* Bottom Action Buttons */
+    .board-actions {
+      display: flex;
+      width: 100%;
+      max-width: 450px;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px 5px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--primary-gold) 100%);
+      color: #000;
+      font-weight: 600;
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+    }
+
+    .action-btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Autoplay / Start Game Overlay Modal */
+    .start-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 11, 28, 0.96);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    .start-card {
+      background: transparent;
+      max-width: 450px;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .start-title {
+      font-size: 6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 40%, var(--primary-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.35);
+      letter-spacing: 8px;
+      margin-bottom: 50px;
+      animation: pulse 3s infinite;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--primary-gold) 100%);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 16px 50px;
+      font-size: 1.25rem;
+      border-radius: 50px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+      transition: all 0.2s;
+      margin: 0 auto;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(255, 215, 0, 0.4);
+    }
+
+    /* Birthday Celebration Win Modal overlay */
+    .win-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 11, 28, 0.85);
+      z-index: 150;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .win-modal.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .win-card {
+      background: linear-gradient(135deg, rgba(22, 24, 58, 0.95) 0%, rgba(10, 11, 28, 0.98) 100%);
+      border: 2px solid var(--primary-gold);
+      max-width: 500px;
+      width: 100%;
+      padding: 40px 30px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: var(--neon-glow), 0 15px 50px rgba(0, 0, 0, 0.6);
+      transform: scale(0.85);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .win-modal.visible .win-card {
+      transform: scale(1);
+    }
+
+    .win-avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 4px solid var(--primary-gold);
+      margin: 0 auto 20px;
+      overflow: hidden;
+      box-shadow: var(--neon-glow);
+    }
+
+    .win-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .wish-text {
+      font-size: 1.15rem;
+      color: var(--text-main);
+      margin: 20px 0;
+      line-height: 1.8;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+
+    .speak-btn {
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid var(--primary-gold);
+      color: var(--primary-gold);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+    }
+
+    .speak-btn:hover {
+      background: var(--primary-gold);
+      color: #000;
+      transform: scale(1.1);
+      box-shadow: var(--neon-glow);
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 140;
+      pointer-events: none;
+    }
+
+    /* Level Transition Overlay */
+    .level-transition {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 11, 28, 0.9);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.4s ease forwards;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .level-transition-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--primary-gold);
+      margin-bottom: 12px;
+      text-shadow: var(--neon-glow);
+    }
+    
+    .level-transition-sub {
+      font-size: 1rem;
+      color: var(--text-main);
+      opacity: 0.9;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); text-shadow: 0 0 30px rgba(255,215,0,0.25); }
+      50% { transform: scale(1.05); text-shadow: 0 0 55px rgba(255,215,0,0.65); }
+      100% { transform: scale(1); text-shadow: 0 0 30px rgba(255,215,0,0.25); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <!-- Background Music Video Tag (Safe for mobile autoplay/playsinline) -->
+  <video id="bg-audio" loop playsinline style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
+    <source src="newmusic.mp4" type="video/mp4">
+  </video>
+
+  <!-- Autoplay / Start Game overlay (Minimalist, only 'แพม') -->
+  <div class="start-modal" id="start-modal">
+    <div class="start-card">
+      <div class="start-title">แพม</div>
+      <button class="start-btn" onclick="startGameWithAudio()">
+        เริ่มเล่น
+      </button>
+    </div>
+  </div>
+
+  <!-- Birthday Celebration Win Modal overlay -->
+  <div class="win-modal" id="win-modal">
+    <div class="win-card">
+      <div class="start-icon" style="font-size: 3rem; margin-bottom: 5px;">🎉</div>
+      <h2 id="win-header-title" style="color: var(--primary-gold); font-size: 1.8rem; margin-bottom: 15px;">คุณต่อจิ๊กซอว์สำเร็จแล้ว!</h2>
+      
+      <div class="win-avatar">
+        <img id="win-avatar-img" src="total.png" alt="Pam Birthday Girl">
+      </div>
+      
+      <h3 style="color: var(--primary-gold); justify-content: center; font-size: 1.3rem;">🎂 สุขสันต์วันเกิดนะแพม 🎂</h3>
+      
+      <div class="wish-text">
+        "ขอให้สุขภาพร่างกายแข็งแรง เงินทองไหลมาเทมานะ"
+      </div>
+
+      <div>
+        <button class="speak-btn" onclick="speakGreeting()" title="ฟังคำอวยพรอีกครั้ง">🔊</button>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="win-action-btn-secondary" class="action-btn" onclick="closeWinModal()">ปิด</button>
+        <button id="win-action-btn-primary" class="action-btn primary" onclick="handleWinPrimaryAction()">เล่นรูปถัดไป</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <header>
+    <h1>แพม</h1>
+  </header>
+
+  <!-- Hidden DOM Elements for compatibility with selectImage and setDifficulty functions -->
+  <div style="display: none;">
+    <button id="btn-img-total"></button>
+    <button id="btn-img-single"></button>
+    <button id="btn-diff-3"></button>
+    <button id="btn-diff-4"></button>
+    <button id="btn-diff-5"></button>
+  </div>
+
+  <main>
+    <!-- Right Column: Puzzle Board -->
+    <div class="game-area">
+      <div class="board-outer" id="board-outer">
+        <!-- Board Aspect-Ratio container -->
+        <div class="board-container" id="board-container">
+          <!-- Guide Preview layer -->
+          <div class="preview-overlay" id="preview-overlay"></div>
+          <!-- Puzzle Pieces get dynamically generated here -->
+        </div>
+      </div>
+
+      <!-- HUD information -->
+      <div class="hud">
+        <div class="status-badge" id="hud-timer">เวลา: 00:00</div>
+        <div class="status-badge highlight" id="hud-progress">ความถูกต้อง: 0%</div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="board-actions">
+        <button class="action-btn" id="btn-preview" onmousedown="showPreview(true)" onmouseup="showPreview(false)" onmouseleave="showPreview(false)" ontouchstart="showPreview(true)" ontouchend="showPreview(false)">
+          🔍 ภาพจริง
+        </button>
+        <button class="action-btn" onclick="shuffleGame()">
+          🔀 สลับใหม่
+        </button>
+        <button class="action-btn primary" id="play-audio-btn" onclick="toggleAudio()">
+          <span id="audio-icon">⏸️</span> <span id="audio-text">เสียง</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Game State
+    let currentImage = 'total.png';
+    let currentGridSize = 5; // 5x5 default
+    let pieces = [];
+    let selectedPiece = null;
+    let isSolved = false;
+    
+    // Timer State
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    
+    // Audio State
+    const audio = document.getElementById('bg-audio');
+    audio.volume = 0.15; // Set volume low by default
+
+    // Confetti System
+    let confettiActive = false;
+    let confettiParticles = [];
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Resize Canvas
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Start Game and close modal
+    function startGameWithAudio() {
+      document.getElementById('start-modal').style.display = 'none';
+      audio.play().catch(e => console.log('Audio play failed:', e));
+      updateAudioControls();
+      
+      // Initialize the puzzle game
+      initGame();
+    }
+
+    // Autoplay logic: Attempt autoplay on load, fallback to page interaction listener
+    function initAutoplay() {
+      audio.volume = 0.2;
+      
+      const startPlay = () => {
+        audio.play().then(() => {
+          updateAudioControls();
+          removeListeners();
+        }).catch(err => console.log("Autoplay blocked:", err));
+      };
+      
+      const removeListeners = () => {
+        document.removeEventListener('click', startPlay);
+        document.removeEventListener('touchstart', startPlay);
+        document.removeEventListener('keydown', startPlay);
+      };
+      
+      document.addEventListener('click', startPlay);
+      document.addEventListener('touchstart', startPlay);
+      document.addEventListener('keydown', startPlay);
+      
+      // Also try immediately
+      audio.play().then(() => {
+        updateAudioControls();
+        removeListeners();
+      }).catch(() => {});
+    }
+    
+    // Call initAutoplay on window load
+    window.addEventListener('load', initAutoplay);
+
+    // Toggle background chanting audio
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+      updateAudioControls();
+    }
+
+    function changeVolume(val) {
+      audio.volume = val;
+    }
+
+    function updateAudioControls() {
+      const icon = document.getElementById('audio-icon');
+      const text = document.getElementById('audio-text');
+      const btn = document.getElementById('play-audio-btn');
+      
+      if (audio.paused) {
+        icon.innerText = '▶️';
+        text.innerText = 'เสียง';
+        btn.style.background = 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = 'var(--text-main)';
+      } else {
+        icon.innerText = '⏸️';
+        text.innerText = 'เสียง';
+        btn.style.background = 'rgba(255, 215, 0, 0.1)';
+        btn.style.borderColor = 'var(--primary-gold)';
+        btn.style.color = 'var(--primary-gold)';
+      }
+    }
+
+    // Select Picture
+    function selectImage(imgName, aspectRatio) {
+      if (imgName === currentImage) return;
+      currentImage = imgName;
+      
+      // Update UI thumbnails state
+      document.getElementById('btn-img-total').classList.toggle('active', imgName === 'total.png');
+      document.getElementById('btn-img-single').classList.toggle('active', imgName === 'single.png');
+      
+      // Update win avatar accordingly
+      document.getElementById('win-avatar-img').src = currentImage;
+      
+      // Update board aspect ratio
+      const container = document.getElementById('board-container');
+      container.style.aspectRatio = aspectRatio;
+      
+      initGame();
+    }
+
+    // Set Difficulty Grid Size
+    function setDifficulty(size) {
+      if (size === currentGridSize) return;
+      currentGridSize = size;
+      
+      // Update UI buttons state
+      document.getElementById('btn-diff-3').classList.toggle('active', size === 3);
+      document.getElementById('btn-diff-4').classList.toggle('active', size === 4);
+      document.getElementById('btn-diff-5').classList.toggle('active', size === 5);
+      
+      initGame();
+    }
+
+    // Show/Hide Preview image
+    function showPreview(show) {
+      const overlay = document.getElementById('preview-overlay');
+      if (show) {
+        overlay.classList.add('visible');
+      } else {
+        overlay.classList.remove('visible');
+      }
+    }
+
+    // Timer Logic
+    function startTimer() {
+      clearInterval(timerInterval);
+      secondsElapsed = 0;
+      updateTimerDisplay();
+      
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    // Stop Timer
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+      const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+      document.getElementById('hud-timer').innerText = `เวลา: ${mins}:${secs}`;
+    }
+
+    // Initialize/Reset Game Grid
+    function initGame() {
+      isSolved = false;
+      selectedPiece = null;
+      document.getElementById('board-outer').classList.remove('solved');
+      
+      // Set background preview
+      const overlay = document.getElementById('preview-overlay');
+      overlay.style.backgroundImage = `url(${currentImage})`;
+      
+      // Set properties on board container for grid dimensions
+      const container = document.getElementById('board-container');
+      container.style.setProperty('--cols', currentGridSize);
+      container.style.setProperty('--rows', currentGridSize);
+      
+      // Clear pieces in DOM
+      // Keep only preview overlay
+      const pieceElements = container.querySelectorAll('.puzzle-piece');
+      pieceElements.forEach(el => el.remove());
+      
+      // Build pieces representation
+      pieces = [];
+      const totalPieces = currentGridSize * currentGridSize;
+      
+      for (let i = 0; i < totalPieces; i++) {
+        const row = Math.floor(i / currentGridSize);
+        const col = i % currentGridSize;
+        
+        pieces.push({
+          correctIndex: i,
+          currentIndex: i,
+          row: row,
+          col: col
+        });
+      }
+      
+      // Generate DOM Elements
+      pieces.forEach(piece => {
+        const el = document.createElement('div');
+        el.className = 'puzzle-piece';
+        el.style.backgroundImage = `url(${currentImage})`;
+        
+        // CSS custom properties for position rendering
+        el.style.setProperty('--orig-row', piece.row);
+        el.style.setProperty('--orig-col', piece.col);
+        el.style.setProperty('--curr-row', piece.row);
+        el.style.setProperty('--curr-col', piece.col);
+        
+        el.dataset.id = piece.correctIndex;
+        
+        // Setup Interactions
+        // 1. Click-to-swap
+        el.addEventListener('click', () => handlePieceClick(piece, el));
+        
+        // 2. Drag & Drop API
+        el.setAttribute('draggable', 'true');
+        el.addEventListener('dragstart', (e) => handleDragStart(e, piece, el));
+        el.addEventListener('dragover', (e) => e.preventDefault());
+        el.addEventListener('drop', (e) => handleDrop(e, piece));
+        el.addEventListener('dragend', () => clearDragStyles());
+        
+        container.appendChild(el);
+        piece.element = el;
+      });
+      
+      // Shuffle pieces
+      shuffleGame();
+    }
+
+    // Shuffle logic
+    function shuffleGame() {
+      if (isSolved) return;
+      
+      const totalPieces = currentGridSize * currentGridSize;
+      let indexes = Array.from({length: totalPieces}, (_, i) => i);
+      
+      // Shuffle array randomly
+      // Ensure we don't accidentally get an already-solved grid
+      do {
+        for (let i = indexes.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
+        }
+      } while (isAlreadySolved(indexes));
+      
+      // Apply shuffles to game state
+      pieces.forEach((piece, index) => {
+        piece.currentIndex = indexes[index];
+        updatePieceDOM(piece);
+      });
+      
+      // Reset state & restart timer
+      if (selectedPiece) {
+        selectedPiece.element.classList.remove('selected');
+        selectedPiece = null;
+      }
+      
+      updateProgress();
+      startTimer();
+    }
+
+    function isAlreadySolved(indexes) {
+      return indexes.every((val, index) => val === index);
+    }
+
+    // Update piece position on screen
+    function updatePieceDOM(piece) {
+      const el = piece.element;
+      const currRow = Math.floor(piece.currentIndex / currentGridSize);
+      const currCol = piece.currentIndex % currentGridSize;
+      
+      el.style.setProperty('--curr-row', currRow);
+      el.style.setProperty('--curr-col', currCol);
+      
+      // Check if it is snapped into the correct position
+      if (piece.currentIndex === piece.correctIndex) {
+        el.classList.add('correct-snap');
+      } else {
+        el.classList.remove('correct-snap');
+      }
+    }
+
+    // Click-to-swap controller
+    function handlePieceClick(piece, el) {
+      if (isSolved) return;
+      
+      if (!selectedPiece) {
+        // Select piece
+        selectedPiece = piece;
+        el.classList.add('selected');
+      } else {
+        // Double clicked the same piece - deselect
+        if (selectedPiece === piece) {
+          el.classList.remove('selected');
+          selectedPiece = null;
+          return;
+        }
+        
+        // Swap pieces in data state
+        swapPieces(selectedPiece, piece);
+        
+        // Deselect
+        selectedPiece.element.classList.remove('selected');
+        selectedPiece = null;
+        
+        // Check game completion
+        checkSolved();
+      }
+    }
+
+    // Drag and Drop Controllers
+    let draggedPiece = null;
+
+    function handleDragStart(e, piece, el) {
+      if (isSolved) return;
+      draggedPiece = piece;
+      el.classList.add('selected');
+      e.dataTransfer.setData('text/plain', piece.correctIndex);
+    }
+
+    function handleDrop(e, targetPiece) {
+      e.preventDefault();
+      if (isSolved || !draggedPiece || draggedPiece === targetPiece) return;
+      
+      swapPieces(draggedPiece, targetPiece);
+      checkSolved();
+    }
+
+    function clearDragStyles() {
+      if (draggedPiece) {
+        draggedPiece.element.classList.remove('selected');
+        draggedPiece = null;
+      }
+    }
+
+    // Core Swap Function
+    function swapPieces(pieceA, pieceB) {
+      const tempIndex = pieceA.currentIndex;
+      pieceA.currentIndex = pieceB.currentIndex;
+      pieceB.currentIndex = tempIndex;
+      
+      updatePieceDOM(pieceA);
+      updatePieceDOM(pieceB);
+      
+      updateProgress();
+    }
+
+    // Progress HUD update
+    function updateProgress() {
+      let correctCount = 0;
+      pieces.forEach(p => {
+        if (p.currentIndex === p.correctIndex) {
+          correctCount++;
+        }
+      });
+      
+      const pct = Math.round((correctCount / pieces.length) * 100);
+      document.getElementById('hud-progress').innerText = `ความถูกต้อง: ${pct}%`;
+    }
+
+    // Game End Checker
+    function checkSolved() {
+      const solved = pieces.every(p => p.currentIndex === p.correctIndex);
+      if (solved) {
+        triggerWin();
+      }
+    }
+
+    // Trigger Win celebration & vocal wishes
+    function triggerWin() {
+      isSolved = true;
+      stopTimer();
+      document.getElementById('board-outer').classList.add('solved');
+      
+      // Lock dragging
+      pieces.forEach(p => {
+        p.element.setAttribute('draggable', 'false');
+        p.element.classList.remove('correct-snap');
+      });
+      
+      if (currentImage === 'total.png') {
+        // LEVEL 1 COMPLETED: Show soft transition, then auto go to Level 2
+        const container = document.getElementById('board-container');
+        
+        const transDiv = document.createElement('div');
+        transDiv.className = 'level-transition';
+        transDiv.innerHTML = `
+          <div class="level-transition-title">🎉 สำเร็จด่านที่ 1! 🎉</div>
+          <div class="level-transition-sub">กำลังเข้าสู่ด่านถัดไป (รูปเดี่ยวแพม)...</div>
+        `;
+        container.appendChild(transDiv);
+        
+        setTimeout(() => {
+          transDiv.remove();
+          selectImage('single.png', '1/1');
+        }, 2200);
+      } else {
+        // LEVEL 2 (FINAL) COMPLETED: Full birthday celebration!
+        // Lower volume of chanting background audio slightly to make greeting clear
+        const currentVol = audio.volume;
+        audio.volume = Math.max(0.05, currentVol - 0.1);
+        
+        // Trigger voice greeting
+        speakGreeting();
+        
+        // Confetti celebration
+        startConfetti();
+        
+        const primaryBtn = document.getElementById('win-action-btn-primary');
+        const headerTitle = document.getElementById('win-header-title');
+        
+        headerTitle.innerText = "สุขสันต์วันเกิดนะแพม! 🎂";
+        primaryBtn.innerText = "เล่นใหม่อีกครั้ง";
+        primaryBtn.style.display = "block";
+        
+        // Open win modal with delay for dramatic effect
+        setTimeout(() => {
+          document.getElementById('win-modal').classList.add('visible');
+        }, 1000);
+      }
+    }
+
+    // Action button handlers in the win modal
+    function handleWinPrimaryAction() {
+      if (currentImage === 'total.png') {
+        // Go to single.png next
+        closeWinModal();
+        selectImage('single.png', '1/1');
+      } else {
+        // Loop back to total.png
+        closeWinModal();
+        selectImage('total.png', '3/4');
+      }
+    }
+
+    function resetGame() {
+      closeWinModal();
+      initGame();
+    }
+
+    function closeWinModal() {
+      document.getElementById('win-modal').classList.remove('visible');
+      stopConfetti();
+      
+      // Restore audio volume to default soft level
+      audio.volume = 0.2;
+    }
+
+    // Web Speech API Thai Greeting Speaker
+    function speakGreeting() {
+      if ('speechSynthesis' in window) {
+        // Cancel active Speech
+        window.speechSynthesis.cancel();
+        
+        const text = "สุขสันต์วันเกิดนะแพม ขอให้สุขภาพร่างกายแข็งแรง เงินทองไหลมาเทมานะ";
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'th-TH';
+        utterance.rate = 0.95; // Natural speed
+        utterance.pitch = 1.05; // Friendly pitch
+        
+        // Locate a Thai voice if available
+        const voices = window.speechSynthesis.getVoices();
+        const thaiVoice = voices.find(v => v.lang.includes('th') || v.lang.includes('TH'));
+        if (thaiVoice) {
+          utterance.voice = thaiVoice;
+        }
+        
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.log('Web Speech API is not supported in this browser.');
+      }
+    }
+
+    // Handle voice loaded asynchronously in some browsers (e.g. Chrome)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        // Triggered when voices load
+      };
+    }
+
+    // --- Simple Canvas Confetti Particle System ---
+    function startConfetti() {
+      confettiActive = true;
+      confettiParticles = [];
+      
+      // Generate initial particles
+      for (let i = 0; i < 150; i++) {
+        confettiParticles.push(createConfettiParticle());
+      }
+      
+      drawConfettiFrame();
+    }
+
+    function stopConfetti() {
+      confettiActive = false;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function createConfettiParticle() {
+      const colors = ['#ffd700', '#ffaa00', '#f1f1f7', '#ff69b4', '#87ceeb', '#98fb98'];
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * canvas.height,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      };
+    }
+
+    function drawConfettiFrame() {
+      if (!confettiActive) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      confettiParticles.forEach((p, idx) => {
+        p.tiltAngle += p.tiltAngleIncremental;
+        p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+        p.x += Math.sin(p.tiltAngle);
+        p.tilt = Math.sin(p.tiltAngle - idx / 3) * 15;
+        
+        // Draw particle
+        ctx.beginPath();
+        ctx.lineWidth = p.r;
+        ctx.strokeStyle = p.color;
+        ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+        ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+        ctx.stroke();
+        
+        // Reset particle if it goes offscreen
+        if (p.y > canvas.height) {
+          confettiParticles[idx] = createConfettiParticle();
+          confettiParticles[idx].y = -20;
+        }
+      });
+      
+      requestAnimationFrame(drawConfettiFrame);
+    }
+  </script>
+</body>
+</html>
