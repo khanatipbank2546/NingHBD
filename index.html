@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แพม</title>
+  <title>หนิง</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -268,7 +268,7 @@
     .board-container {
       position: relative;
       width: 100%;
-      aspect-ratio: 3/4; /* Will change dynamically in JS based on selected image */
+      aspect-ratio: 889/910; /* Set based on ning.png size */
       border-radius: 12px;
       overflow: hidden;
       background: #121324;
@@ -622,10 +622,10 @@
     <source src="newmusic.mp4" type="video/mp4">
   </video>
 
-  <!-- Autoplay / Start Game overlay (Minimalist, only 'แพม') -->
+  <!-- Autoplay / Start Game overlay (Minimalist, only 'หนิง') -->
   <div class="start-modal" id="start-modal">
     <div class="start-card">
-      <div class="start-title">แพม</div>
+      <div class="start-title">หนิง</div>
       <button class="start-btn" onclick="startGameWithAudio()">
         เริ่มเล่น
       </button>
@@ -639,10 +639,10 @@
       <h2 id="win-header-title" style="color: var(--primary-gold); font-size: 1.8rem; margin-bottom: 15px;">คุณต่อจิ๊กซอว์สำเร็จแล้ว!</h2>
       
       <div class="win-avatar">
-        <img id="win-avatar-img" src="total.png" alt="Pam Birthday Girl">
+        <img id="win-avatar-img" src="ning.png" alt="Ning Birthday Girl">
       </div>
       
-      <h3 style="color: var(--primary-gold); justify-content: center; font-size: 1.3rem;">🎂 สุขสันต์วันเกิดนะแพม 🎂</h3>
+      <h3 style="color: var(--primary-gold); justify-content: center; font-size: 1.3rem;">🎂 สุขสันต์วันเกิดนะหนิง 🎂</h3>
       
       <div class="wish-text">
         "ขอให้สุขภาพร่างกายแข็งแรง เงินทองไหลมาเทมานะ"
@@ -663,7 +663,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <header>
-    <h1>แพม</h1>
+    <h1>หนิง</h1>
   </header>
 
   <!-- Hidden DOM Elements for compatibility with selectImage and setDifficulty functions -->
@@ -710,7 +710,7 @@
 
   <script>
     // Game State
-    let currentImage = 'total.png';
+    let currentImage = 'ning.png';
     let currentGridSize = 5; // 5x5 default
     let pieces = [];
     let selectedPiece = null;
@@ -819,8 +819,8 @@
       currentImage = imgName;
       
       // Update UI thumbnails state
-      document.getElementById('btn-img-total').classList.toggle('active', imgName === 'total.png');
-      document.getElementById('btn-img-single').classList.toggle('active', imgName === 'single.png');
+      document.getElementById('btn-img-total').classList.toggle('active', imgName === 'ning.png');
+      document.getElementById('btn-img-single').classList.toggle('active', imgName === 'ning.png');
       
       // Update win avatar accordingly
       document.getElementById('win-avatar-img').src = currentImage;
@@ -1098,59 +1098,33 @@
         p.element.classList.remove('correct-snap');
       });
       
-      if (currentImage === 'total.png') {
-        // LEVEL 1 COMPLETED: Show soft transition, then auto go to Level 2
-        const container = document.getElementById('board-container');
-        
-        const transDiv = document.createElement('div');
-        transDiv.className = 'level-transition';
-        transDiv.innerHTML = `
-          <div class="level-transition-title">🎉 สำเร็จด่านที่ 1! 🎉</div>
-          <div class="level-transition-sub">กำลังเข้าสู่ด่านถัดไป (รูปเดี่ยวแพม)...</div>
-        `;
-        container.appendChild(transDiv);
-        
-        setTimeout(() => {
-          transDiv.remove();
-          selectImage('single.png', '1/1');
-        }, 2200);
-      } else {
-        // LEVEL 2 (FINAL) COMPLETED: Full birthday celebration!
-        // Lower volume of chanting background audio slightly to make greeting clear
-        const currentVol = audio.volume;
-        audio.volume = Math.max(0.05, currentVol - 0.1);
-        
-        // Trigger voice greeting
-        speakGreeting();
-        
-        // Confetti celebration
-        startConfetti();
-        
-        const primaryBtn = document.getElementById('win-action-btn-primary');
-        const headerTitle = document.getElementById('win-header-title');
-        
-        headerTitle.innerText = "สุขสันต์วันเกิดนะแพม! 🎂";
-        primaryBtn.innerText = "เล่นใหม่อีกครั้ง";
-        primaryBtn.style.display = "block";
-        
-        // Open win modal with delay for dramatic effect
-        setTimeout(() => {
-          document.getElementById('win-modal').classList.add('visible');
-        }, 1000);
-      }
+      // Full birthday celebration!
+      // Lower volume of chanting background audio slightly to make greeting clear
+      const currentVol = audio.volume;
+      audio.volume = Math.max(0.05, currentVol - 0.1);
+      
+      // Trigger voice greeting
+      speakGreeting();
+      
+      // Confetti celebration
+      startConfetti();
+      
+      const primaryBtn = document.getElementById('win-action-btn-primary');
+      const headerTitle = document.getElementById('win-header-title');
+      
+      headerTitle.innerText = "สุขสันต์วันเกิดนะหนิง! 🎂";
+      primaryBtn.innerText = "เล่นใหม่อีกครั้ง";
+      primaryBtn.style.display = "block";
+      
+      // Open win modal with delay for dramatic effect
+      setTimeout(() => {
+        document.getElementById('win-modal').classList.add('visible');
+      }, 1000);
     }
 
     // Action button handlers in the win modal
     function handleWinPrimaryAction() {
-      if (currentImage === 'total.png') {
-        // Go to single.png next
-        closeWinModal();
-        selectImage('single.png', '1/1');
-      } else {
-        // Loop back to total.png
-        closeWinModal();
-        selectImage('total.png', '3/4');
-      }
+      resetGame();
     }
 
     function resetGame() {
@@ -1172,7 +1146,7 @@
         // Cancel active Speech
         window.speechSynthesis.cancel();
         
-        const text = "สุขสันต์วันเกิดนะแพม ขอให้สุขภาพร่างกายแข็งแรง เงินทองไหลมาเทมานะ";
+        const text = "สุขสันต์วันเกิดนะหนิง ขอให้สุขภาพร่างกายแข็งแรง เงินทองไหลมาเทมานะ";
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'th-TH';
         utterance.rate = 0.95; // Natural speed
