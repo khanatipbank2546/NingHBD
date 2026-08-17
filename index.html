@@ -618,7 +618,7 @@
   <div class="bg-blob blob-2"></div>
 
   <!-- Background Music Video Tag (Safe for mobile autoplay/playsinline) -->
-  <video id="bg-audio" loop playsinline style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
+  <video id="bg-audio" autoplay muted loop playsinline preload="auto" style="position: absolute; left: -9999px; top: -9999px; width: 300px; height: 200px; pointer-events: none;">
     <source src="newmusic.mp4" type="video/mp4">
   </video>
 
@@ -741,6 +741,7 @@
     // Start Game and close modal
     function startGameWithAudio() {
       document.getElementById('start-modal').style.display = 'none';
+      audio.muted = false;
       audio.play().catch(e => console.log('Audio play failed:', e));
       updateAudioControls();
       
@@ -753,6 +754,7 @@
       audio.volume = 0.2;
       
       const startPlay = () => {
+        audio.muted = false;
         audio.play().then(() => {
           updateAudioControls();
           removeListeners();
@@ -769,10 +771,9 @@
       document.addEventListener('touchstart', startPlay);
       document.addEventListener('keydown', startPlay);
       
-      // Also try immediately
+      // Also try immediately (muted autoplay should work)
       audio.play().then(() => {
         updateAudioControls();
-        removeListeners();
       }).catch(() => {});
     }
     
@@ -781,6 +782,7 @@
 
     // Toggle background chanting audio
     function toggleAudio() {
+      audio.muted = false;
       if (audio.paused) {
         audio.play();
       } else {
